@@ -1,18 +1,19 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import mongoose, { Schema, Document } from "mongoose";
 
 export interface ILeed extends Document {
   companyId: string;
   campaignId: string;
-  content: any;                 // arbitrary payload from forms/ads
-  WhatsApp: string;             // default "N/A"
-  previousSite: string;         // default "N/A"
-  createdTime: Date;            // when the lead was created (business time)
-  badges: string[];             // default ["new"]
+  content: any; // arbitrary payload from forms/ads
+  WhatsApp: string; // default "N/A"
+  previousSite: string; // default "N/A"
+  createdTime: Date; // when the lead was created (business time)
+  badges: string[]; // default ["new"]
 
   // added (simple, creation-friendly)
-  priority: number;             // 1 (low) .. 5 (high); default 3
+  priority: number; // 1 (low) .. 5 (high); default 3
   lastContactedAt: Date | null; // default null
-  contactAttempts: number;      // default 0
+  contactAttempts: number; // default 0
 
   // mongoose timestamps
   createdAt: Date;
@@ -51,4 +52,5 @@ LeedSchema.pre("save", function (next) {
   next();
 });
 
-export default mongoose.models.Leed || mongoose.model<ILeed>("Leed", LeedSchema);
+export default mongoose.models.Leed ||
+  mongoose.model<ILeed>("Leed", LeedSchema);

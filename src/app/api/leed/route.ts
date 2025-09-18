@@ -1,4 +1,4 @@
-// app/api/leed/route.ts
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export const dynamic = "force-dynamic";
 
 import { NextRequest, NextResponse } from "next/server";
@@ -61,8 +61,13 @@ export async function POST(req: NextRequest) {
       content, // Mixed — accept as-is for speed
       WhatsApp: body.WhatsApp ?? "N/A",
       previousSite: body.previousSite ?? "N/A",
-      createdTime: body.createdTime ? new Date(body.createdTime) : new Date(now),
-      badges: Array.isArray(body.badges) && body.badges.length ? body.badges : ["new"],
+      createdTime: body.createdTime
+        ? new Date(body.createdTime)
+        : new Date(now),
+      badges:
+        Array.isArray(body.badges) && body.badges.length
+          ? body.badges
+          : ["new"],
       priority:
         typeof body.priority === "number"
           ? Math.min(5, Math.max(1, body.priority))
@@ -96,7 +101,6 @@ export async function POST(req: NextRequest) {
   }
 }
 
-
 export async function GET(req: NextRequest) {
   try {
     await connectMongo();
@@ -124,7 +128,8 @@ export async function GET(req: NextRequest) {
     }
 
     // --- Query params / defaults ---
-    const startDateRaw = req.nextUrl.searchParams.get("startDate") || "1960-01-01";
+    const startDateRaw =
+      req.nextUrl.searchParams.get("startDate") || "1960-01-01";
     const endDateRaw =
       req.nextUrl.searchParams.get("endDate") ||
       new Date().toISOString().split("T")[0];
@@ -141,15 +146,29 @@ export async function GET(req: NextRequest) {
     const page = Math.max(1, parseInt(pageRaw, 10) || 1);
 
     // sorting (allowlist to avoid unindexed sorts/injection)
-    const sortByRaw = (req.nextUrl.searchParams.get("sortBy") || "createdTime").trim();
-    const sortOrderRaw = (req.nextUrl.searchParams.get("sortOrder") || "desc").trim();
-    const ALLOWED_SORT = new Set(["createdTime", "createdAt", "updatedAt", "priority", "contactAttempts"]);
+    const sortByRaw = (
+      req.nextUrl.searchParams.get("sortBy") || "createdTime"
+    ).trim();
+    const sortOrderRaw = (
+      req.nextUrl.searchParams.get("sortOrder") || "desc"
+    ).trim();
+    const ALLOWED_SORT = new Set([
+      "createdTime",
+      "createdAt",
+      "updatedAt",
+      "priority",
+      "contactAttempts",
+    ]);
     const sortBy = ALLOWED_SORT.has(sortByRaw) ? sortByRaw : "createdTime";
     const sortOrder = sortOrderRaw === "asc" ? 1 : -1;
 
     // badges
     let badgeList =
-      req.nextUrl.searchParams.get("badgeList")?.split(",").map((s) => s.trim()).filter(Boolean) || [];
+      req.nextUrl.searchParams
+        .get("badgeList")
+        ?.split(",")
+        .map((s) => s.trim())
+        .filter(Boolean) || [];
     if (badgeList.length === 1 && badgeList[0] === "") badgeList = [];
 
     // --- Build filter ---
@@ -209,10 +228,11 @@ export async function GET(req: NextRequest) {
   } catch (error: any) {
     console.error("GET /api/leed error:", error);
     return NextResponse.json(
-      { message: "Failed to fetch leeds", error: error?.message || "Unknown error" },
+      {
+        message: "Failed to fetch leeds",
+        error: error?.message || "Unknown error",
+      },
       { status: 500 }
     );
   }
 }
-
-

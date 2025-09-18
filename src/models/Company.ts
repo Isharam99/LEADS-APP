@@ -9,7 +9,7 @@ export interface ICompany extends Document {
     name: string;
     adsetId: string;
     params: string[];
-    creativeLink: [string]
+    creativeLink: [string];
   }[];
   ownerId?: mongoose.Types.ObjectId; // reference to a User (optional)
   status: "active" | "inactive";
@@ -26,7 +26,7 @@ const campaignSchema = new Schema(
       type: [String],
       default: ["first-name", "last-name"],
     },
-    creativeLink: { type: [String], required: true, default :  [] },
+    creativeLink: { type: [String], required: true, default: [] },
   },
   { _id: false } // don’t create a new _id for subdocs
 );
@@ -37,10 +37,11 @@ const companySchema = new Schema<ICompany>(
     companyName: { type: String, required: true },
     image: { type: String, default: "/company.png" },
     campaigns: { type: [campaignSchema], default: [] },
-    ownerId: { type: String},
+    ownerId: { type: String },
     status: { type: String, enum: ["active", "inactive"], default: "active" },
   },
   { timestamps: true }
 );
 
-export default  mongoose.models.Company || mongoose.model<ICompany>("Company", companySchema);
+export default mongoose.models.Company ||
+  mongoose.model<ICompany>("Company", companySchema);

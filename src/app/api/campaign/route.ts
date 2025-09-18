@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextRequest, NextResponse } from "next/server";
 import connectMongo from "@/lib/connectDB";
 import Company from "@/models/Company";
